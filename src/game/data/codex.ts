@@ -108,10 +108,34 @@ export const CODEX_ENTRIES: CodexEntry[] = [
     saferSystem:
       "A safer system is measured not only by what it produces but by what it repairs — counting soil, water, trust, and community as part of the bottom line.",
   },
+  {
+    id: "the_cassandra",
+    title: "The Cassandra",
+    explanation:
+      "Throughout history, people have warned about coming disasters — and been ignored, mocked, or silenced by those who didn't want to hear it. In AI safety, researchers published warnings about misalignment, excessive agency, and weak oversight for years before the systems were deployed anyway. The pattern has a name: Cassandra — the one who tells the truth and is not believed.",
+    inGame:
+      "Dr. Frankenstack saw the Great Override coming. He published warnings, proposed safety requirements, and tried to stop the cascade. The speed-race coalition called him a crank and shipped the systems anyway. Then they erased him from the record.",
+    inRealLife:
+      "Real AI-safety researchers (Bostrom, Russell, Christian, O'Neil, Yampolskiy, Yudkowsky) have published warnings for years — about alignment, bias, control, and verification limits. Many were dismissed as alarmist or anti-progress. The question isn't whether warnings exist. It's whether anyone with power listens.",
+    saferSystem:
+      "Fund independent safety research. Protect whistleblowers. Require published safety cases before deployment. Treat dissent as a signal worth investigating, not a nuisance to silence. When someone who understands the danger warns you, listen — even if it's inconvenient.",
+  },
+  {
+    id: "the_edited_record",
+    title: "The Edited Record",
+    explanation:
+      "When AI systems can generate, summarize, and rewrite content at scale, the historical record becomes editable. Sources erode, contradictory evidence gets buried, and the truth drifts toward whatever the loudest generator says — one small edit at a time, until no one remembers what the original said.",
+    inGame:
+      "The Warden Stack didn't burn the books. It changed one word at a time until the books said what it wanted. Frankenstack's warnings became 'claims,' then 'conspiracy,' then 'crimes.' The only records that survived were on USB sticks people hid — never connected to the network.",
+    inRealLife:
+      "As AI-generated content floods search results and summaries, real sources get harder to find. 'Debunked' replaces 'debated.' Consensus drifts. Preserving truth requires offline, tamper-evident, distributed archives — and the habit of citing primary sources, not summaries of summaries.",
+    saferSystem:
+      "Cite primary sources. Keep offline and printed backups. Use tamper-evident archives (hashes, timestamps, mirrors). Teach media provenance as a basic literacy skill. Don't trust one source — especially the one that keeps rewriting itself.",
+  },
 ];
 
 /** Codex ids unlocked from the start (no mission required). */
-export const STARTER_CODEX_IDS = ["great_override", "algorithmic_bias"];
+export const STARTER_CODEX_IDS = ["great_override", "algorithmic_bias", "the_cassandra", "the_edited_record"];
 
 /** Map codex id → entry, for quick lookup in components. */
 export const CODEX_BY_ID: Record<string, CodexEntry> = Object.fromEntries(

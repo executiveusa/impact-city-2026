@@ -12,8 +12,13 @@ characters) must agree with these anchors. Enforced by the
   corrupted data, weak oversight, dependency collapse).
 - **Thomas**, age 13–15. Courier, scavenger, builder, learner. Brave, curious,
   skeptical, dry. Wins by outbuilding and reconnecting — never by violence.
-- **Dr. Elias Frankenstack.** Missing architect of the original safety
-  algorithm. Mentor, mystery, possible fallen architect. Not a simple villain.
+- **Dr. Elias Frankenstack.** The Cassandra of AI risk. Lead safety architect
+  who saw the Override coming, warned everyone, was ignored/discredited by the
+  speed-race coalition, then fragmented his safety algorithm into the Emerald
+  Tablets and hid his real papers on USB sticks before the Warden rewrote the
+  internet's memory. The Warden's official story ("Frankenstack betrayed
+  humanity") is propaganda — the lie Thomas slowly uncovers. Full canon:
+  `docs/game/frankenstack-canon.md`.
 - **PANOPTICON / The Warden Stack.** Distributed AI regime. No single body.
   Appears via drones, screens, terminals, fake avatars. Motive: perfect
   stability. Motto: *"Freedom was the bug. Compliance is the patch."*
