@@ -1,17 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Landing from "@/pages/Landing";
 import Game from "@/pages/Game";
 
 /**
- * Standalone Impact City app. The game IS the whole app here — root redirects
- * to /game so the build opens straight into the playable MVP.
+ * Impact City standalone app.
+ *  - "/"      cinematic landing (hero, Thomas & Cosmos, abilities, impact teaser)
+ *  - "/game"  playable MVP shell (menu → missions → rebuild → dashboard)
  */
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/game" element={<Game />} />
-        <Route path="/" element={<Navigate to="/game" replace />} />
-        <Route path="*" element={<Navigate to="/game" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,0 +1,416 @@
+/* ==========================================================================
+   Impact City — Cinematic Hero + Characters + Abilities
+   Emerald Gothic Hopepunk. CSS-drawn, no binary assets.
+   ========================================================================== */
+
+/* ----- Hero shell -------------------------------------------------------- */
+.ic-hero {
+  position: relative;
+  min-height: 92vh;
+  min-height: 92dvh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 4rem 6vw 3rem;
+}
+.ic-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 70% 30%, rgba(25, 245, 154, 0.12), transparent 55%),
+    radial-gradient(ellipse at 20% 90%, rgba(122, 63, 36, 0.22), transparent 50%),
+    linear-gradient(180deg, #080a0d 0%, #0e1217 70%, #1f3d2b 130%);
+}
+.ic-hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 40rem;
+}
+.ic-hero__eyebrow {
+  font-family: var(--ic-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--ic-emerald);
+  font-size: 0.78rem;
+  margin: 0 0 0.5rem;
+}
+.ic-hero__title {
+  font-family: var(--ic-font-display);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  color: var(--ic-bone);
+  margin: 0 0 1.2rem;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+}
+.ic-hero__subtitle {
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--ic-text-dim);
+  margin: 0 0 2rem;
+  max-width: 36rem;
+}
+.ic-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+.ic-hero__cta-primary {
+  font-size: 1rem !important;
+  padding: 0.9rem 1.6rem !important;
+}
+.ic-hero__trust {
+  font-size: 0.82rem;
+  color: var(--ic-text-faint);
+  margin: 0;
+}
+.ic-hero__trust strong {
+  color: var(--ic-amber);
+}
+
+/* ----- Hero background props -------------------------------------------- */
+.ic-hero__skyline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  background:
+    linear-gradient(transparent 75%, #080a0d),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 18px,
+      rgba(96, 113, 125, 0.16) 18px 19px,
+      transparent 19px 80px
+    );
+  opacity: 0.5;
+  filter: blur(0.3px);
+}
+.ic-hero__vines {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 18%;
+  background: linear-gradient(transparent, rgba(31, 61, 43, 0.6));
+}
+.ic-hero__doorway {
+  position: absolute;
+  right: 8%;
+  top: 22%;
+  width: 14vw;
+  min-width: 120px;
+  max-width: 260px;
+  aspect-ratio: 3 / 5;
+  background: linear-gradient(180deg, rgba(8, 10, 13, 0.9), rgba(31, 61, 43, 0.4));
+  border: 1px solid rgba(25, 245, 154, 0.25);
+  border-radius: 120px 120px 6px 6px;
+  box-shadow: 0 0 60px -10px rgba(25, 245, 154, 0.4), inset 0 0 40px rgba(8, 10, 13, 0.8);
+}
+.ic-hero__doorway::after {
+  /* Thomas silhouette stepping through */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  width: 38%;
+  height: 70%;
+  background: radial-gradient(ellipse at 50% 20%, #1a1f17 0%, #0a0d0a 60%, transparent 100%);
+  border-radius: 50% 50% 30% 30% / 40% 40% 20% 20%;
+  opacity: 0.92;
+}
+
+/* ----- Emerald tablet glow ----------------------------------------------- */
+.ic-tablet-glow {
+  position: absolute;
+  right: 22%;
+  top: 35%;
+  width: 18vw;
+  max-width: 320px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(25, 245, 154, 0.5), rgba(25, 245, 154, 0.1) 50%, transparent 70%);
+  filter: blur(8px);
+  opacity: 0.6;
+  z-index: 1;
+}
+
+/* ----- Cosmos fly-by ----------------------------------------------------- */
+.ic-cosmos-fly {
+  position: absolute;
+  top: 25%;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.ic-cosmos-fly__bird {
+  width: 64px;
+  height: 40px;
+  background:
+    radial-gradient(ellipse at 30% 50%, #1f3d2b 0%, #0a0d0a 70%, transparent 100%);
+  clip-path: polygon(0% 50%, 30% 20%, 50% 35%, 70% 20%, 100% 50%, 70% 60%, 50% 75%, 30% 60%);
+  filter: drop-shadow(0 0 8px rgba(25, 245, 154, 0.6));
+}
+.ic-cosmos-fly__trail {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 80px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(25, 245, 154, 0.6));
+  filter: blur(1px);
+}
+
+/* ----- Hero sound toggle ------------------------------------------------- */
+.ic-hero-sound {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(14, 18, 23, 0.7);
+  border: 1px solid var(--ic-border);
+  border-radius: var(--ic-radius);
+  padding: 0.4rem 0.6rem;
+  backdrop-filter: blur(6px);
+}
+.ic-hero-sound__mute {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0.1rem;
+  line-height: 1;
+}
+.ic-hero-sound__vol {
+  width: 90px;
+  accent-color: var(--ic-emerald);
+}
+
+/* ----- Characters section ------------------------------------------------ */
+.ic-characters {
+  padding: 4rem 6vw;
+  background: linear-gradient(180deg, #0e1217, #080a0d);
+}
+.ic-characters__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+.ic-character {
+  background: var(--ic-surface);
+  border: 1px solid var(--ic-border);
+  border-radius: var(--ic-radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.ic-character__portrait {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--ic-radius);
+  margin-bottom: 0.5rem;
+}
+.ic-character__portrait--thomas {
+  background:
+    radial-gradient(ellipse at 50% 30%, #3a2a1a 0%, #1a1410 60%, #0a0805 100%);
+  position: relative;
+}
+.ic-character__portrait--thomas::after {
+  content: "Thomas";
+  position: absolute;
+  inset: auto 0 0 0;
+  text-align: center;
+  color: var(--ic-emerald);
+  font-family: var(--ic-font-display);
+  padding: 0.5rem;
+  background: linear-gradient(transparent, rgba(8, 10, 13, 0.9));
+}
+.ic-character__portrait--cosmos {
+  background:
+    radial-gradient(ellipse at 50% 40%, #1f4d3b 0%, #0a1a14 60%, #050a08 100%);
+  position: relative;
+}
+.ic-character__portrait--cosmos::after {
+  content: "Cosmos";
+  position: absolute;
+  inset: auto 0 0 0;
+  text-align: center;
+  color: var(--ic-emerald);
+  font-family: var(--ic-font-display);
+  padding: 0.5rem;
+  background: linear-gradient(transparent, rgba(8, 10, 13, 0.9));
+}
+.ic-character__name {
+  font-family: var(--ic-font-display);
+  font-size: 1.6rem;
+  color: var(--ic-bone);
+  margin: 0;
+}
+.ic-character__role {
+  color: var(--ic-emerald);
+  font-size: 0.85rem;
+  margin: 0;
+}
+.ic-character__tagline {
+  font-style: italic;
+  color: var(--ic-amber);
+  margin: 0;
+}
+.ic-character__desc {
+  color: var(--ic-text);
+  line-height: 1.6;
+  font-size: 0.92rem;
+  margin: 0;
+}
+.ic-character__details {
+  border-top: 1px solid var(--ic-border);
+  padding-top: 0.6rem;
+  font-size: 0.85rem;
+}
+.ic-character__details summary {
+  cursor: pointer;
+  color: var(--ic-text-dim);
+  font-family: var(--ic-font-mono);
+  text-transform: uppercase;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+}
+.ic-character__details ul {
+  color: var(--ic-text-dim);
+  padding-left: 1.2rem;
+  margin: 0.5rem 0 0;
+}
+.ic-character__voice {
+  font-size: 0.82rem;
+  color: var(--ic-text-dim);
+  font-style: italic;
+}
+
+/* ----- Abilities section ------------------------------------------------- */
+.ic-abilities {
+  padding: 4rem 6vw;
+  background: #080a0d;
+}
+.ic-abilities__intro {
+  margin-bottom: 2rem;
+  max-width: 36rem;
+}
+.ic-abilities__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.ic-ability {
+  background: var(--ic-surface);
+  border: 1px solid var(--ic-border);
+  border-radius: var(--ic-radius-lg);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.ic-ability--soon {
+  opacity: 0.7;
+  border-style: dashed;
+}
+.ic-ability__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+}
+.ic-ability__name {
+  font-family: var(--ic-font-display);
+  color: var(--ic-bone);
+  font-size: 1.1rem;
+}
+.ic-ability__badge {
+  font-family: var(--ic-font-mono);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+.ic-ability__badge--active {
+  background: rgba(25, 245, 154, 0.18);
+  color: var(--ic-emerald);
+}
+.ic-ability__badge--roadmap {
+  background: rgba(96, 113, 125, 0.25);
+  color: var(--ic-text-faint);
+}
+.ic-ability__desc {
+  color: var(--ic-text);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.ic-ability__effect,
+.ic-ability__unlock {
+  font-size: 0.8rem;
+  color: var(--ic-text-dim);
+  margin: 0;
+}
+.ic-ability__preview {
+  align-self: flex-start;
+  margin-top: 0.4rem;
+  font-size: 0.78rem !important;
+  padding: 0.35rem 0.7rem !important;
+}
+
+/* ----- Responsive -------------------------------------------------------- */
+@media (max-width: 640px) {
+  .ic-hero__doorway {
+    right: -5%;
+    opacity: 0.5;
+  }
+  .ic-hero-sound {
+    top: 0.8rem;
+    right: 0.8rem;
+  }
+  .ic-hero-sound__vol {
+    width: 60px;
+  }
+}
+
+/* ----- Reduced motion ---------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ic-cosmos-fly,
+  .ic-tablet-glow {
+    animation: none !important;
+  }
+}
+
+/* ----- Landing impact teaser -------------------------------------------- */
+.ic-landing__impact {
+  padding: 4rem 6vw 6rem;
+  text-align: center;
+  background: linear-gradient(180deg, #080a0d, #0e1217);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.ic-landing__impact .ic-h2 {
+  text-align: center;
+}
+.ic-landing__impact .ic-muted {
+  max-width: 38rem;
+  text-align: center;
+}
+.ic-landing__impact strong {
+  color: var(--ic-amber);
+}
