@@ -1,0 +1,17 @@
+{
+  "name": "pi-outreach",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Seattle-focused, AI-risk-aware outreach agent for Impact City. Finds leads, drafts emails, tracks pipeline, spots gaps.",
+  "scripts": {
+    "find-leads": "node src/index.js find-leads",
+    "status": "node src/index.js status",
+    "gaps": "node src/index.js gaps",
+    "playbook": "node src/index.js playbook"
+  },
+  "bin": {
+    "pi-outreach": "./src/index.js"
+  },
+  "dependencies": {}
+}
