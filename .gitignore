@@ -36,3 +36,6 @@ unreal/**/Script/
 # large AI-generated binaries (use git-lfs or approve per-asset)
 public/assets/3d/**/*.fbx
 
+
+# vendored reference skill repos (cherry-picked copies live in .claude/skills)
+.agent-skills/
