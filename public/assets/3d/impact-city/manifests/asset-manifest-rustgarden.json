@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-06-22T04:00:28.522997Z",
+  "assets": [
+    {
+      "name": "rustgarden-scene",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/environments/rustgarden/rustgarden-scene.glb",
+      "size_bytes": 644228,
+      "created_by": "blender/create_rustgarden_scene.py",
+      "date": "2026-06-22T04:00:28.523247Z",
+      "usage": "Environment blockout / Unreal import reference for Rustgarden district.",
+      "replacement_status": "procedural-placeholder"
+    }
+  ]
+}

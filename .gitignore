@@ -19,4 +19,20 @@ npm-debug.log*
 # vercel
 .vercel
 
-.vercel
+# secrets — never commit
+Cosmos_Vault.env
+*secret*
+*api_key*
+
+# Unreal build artifacts (keep scripts + .uproject only)
+unreal/**/Binaries/
+unreal/**/DerivedDataCache/
+unreal/**/Intermediate/
+unreal/**/Saved/
+unreal/**/*.sln
+unreal/**/*.suo
+unreal/**/Script/
+
+# large AI-generated binaries (use git-lfs or approve per-asset)
+public/assets/3d/**/*.fbx
+
