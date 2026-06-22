@@ -1,0 +1,15 @@
+{
+  "name": "pi-game-creator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Impact City Pi game-creation harness — production agent for designing, creating, organizing, validating, and documenting game assets.",
+  "scripts": {
+    "cli": "node src/index.js",
+    "pi-game": "node src/index.js"
+  },
+  "bin": {
+    "pi-game": "./src/index.js"
+  },
+  "dependencies": {}
+}
