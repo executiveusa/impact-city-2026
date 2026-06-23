@@ -1,26 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { buildHeroEntrance } from "@/game/animations/heroTimelines";
 import { CosmosFlight, EmeraldTabletGlow } from "./CosmosFlight";
 import { HeroSoundToggle } from "./HeroSoundToggle";
 import { useGameAudio } from "@/game/audio/useGameAudio";
 
 /**
- * HeroImpactCity — the cinematic hero section for /game.
+ * HeroImpactCity — the cinematic full-page hero.
  *
- * Composition (all CSS-drawn, no binary assets):
- *  - Emerald Tablet glow (pulsing)
- *  - Thomas silhouette stepping through a fractured doorway
- *  - Cosmos fly-by silhouette
- *  - Broken skyline + vines reclaiming concrete
- *  - Title, subtitle, CTAs, trust strip
- *  - Floating sound toggle
+ * Image-first design: if a generated hero image exists at
+ * /assets/impact-city/hero/hero-main.png it becomes the background with
+ * claymation texture overlays. Otherwise falls back to CSS-drawn props.
  *
- * Honors prefers-reduced-motion (timelines become no-ops).
- * No autoplay audio — sound manager resumes only on first gesture.
+ * Drop your generated art into public/assets/impact-city/hero/hero-main.png
+ * and it lights up automatically. See docs/prompts/hero-character-image-prompts.md
  */
 export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const audio = useGameAudio();
+  const [heroImgOk, setHeroImgOk] = useState(false);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -30,22 +27,46 @@ export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
     };
   }, []);
 
-  // Ambient bed starts after first gesture (autoplay-policy compliant).
   useEffect(() => {
     const start = () => audio.startLoop("ambient_rustgarden_loop");
     window.addEventListener("pointerdown", start, { once: true });
     return () => window.removeEventListener("pointerdown", start);
   }, [audio]);
 
+  // Probe for the generated hero image. If it exists, use it.
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setHeroImgOk(true);
+    img.onerror = () => setHeroImgOk(false);
+    img.src = "/assets/impact-city/hero/hero-main.png";
+  }, []);
+
   return (
-    <section ref={rootRef} className="ic-hero" aria-labelledby="ic-hero-title">
-      <div className="ic-hero__bg" aria-hidden="true">
-        <div className="ic-hero__skyline" />
-        <div className="ic-hero__vines" />
-        <div className="ic-hero__doorway" />
-        <EmeraldTabletGlow />
-        <CosmosFlight />
-      </div>
+    <section
+      ref={rootRef}
+      className={`ic-hero ${heroImgOk ? "ic-hero--has-image" : ""}`}
+      aria-labelledby="ic-hero-title"
+    >
+      {heroImgOk ? (
+        <div className="ic-hero__art" aria-hidden="true">
+          <img
+            src="/assets/impact-city/hero/hero-main.png"
+            alt=""
+            className="ic-hero__art-img"
+          />
+          <div className="ic-hero__art-overlay" />
+          <EmeraldTabletGlow />
+          <CosmosFlight />
+        </div>
+      ) : (
+        <div className="ic-hero__bg" aria-hidden="true">
+          <div className="ic-hero__skyline" />
+          <div className="ic-hero__vines" />
+          <div className="ic-hero__doorway" />
+          <EmeraldTabletGlow />
+          <CosmosFlight />
+        </div>
+      )}
 
       <HeroSoundToggle />
 

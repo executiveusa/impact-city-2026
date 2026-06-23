@@ -535,3 +535,74 @@
   margin-top: 2rem;
   font-style: italic;
 }
+
+/* ----- Hero with generated art image ------------------------------------- */
+.ic-hero--has-image {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+.ic-hero__art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.ic-hero__art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: contrast(1.05) saturate(0.95);
+}
+.ic-hero__art-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(8,10,13,0.4) 0%, rgba(8,10,13,0.75) 65%, rgba(8,10,13,0.95) 100%),
+    linear-gradient(90deg, rgba(8,10,13,0.7) 0%, transparent 50%);
+}
+
+/* ----- Character section with real portraits ----------------------------- */
+.ic-characters--full {
+  padding: 5rem 6vw;
+}
+.ic-characters__intro {
+  max-width: 38rem;
+  margin-bottom: 2rem;
+}
+.ic-characters__grid--full {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+}
+.ic-character--has-img .ic-character__portrait {
+  overflow: hidden;
+}
+.ic-character__portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.ic-character__portrait-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+.ic-character__portrait-name {
+  font-family: var(--ic-font-display);
+  font-size: 1.4rem;
+  color: var(--ic-emerald);
+}
+.ic-character__portrait-hint {
+  font-family: var(--ic-font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--ic-text-faint);
+}
+.ic-characters__intro {
+  color: var(--ic-text-dim);
+}
