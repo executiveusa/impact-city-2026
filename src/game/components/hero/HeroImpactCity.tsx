@@ -2,17 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import { buildHeroEntrance } from "@/game/animations/heroTimelines";
 import { CosmosFlight, EmeraldTabletGlow } from "./CosmosFlight";
 import { HeroSoundToggle } from "./HeroSoundToggle";
+import { RustgardenWorld } from "./RustgardenWorld";
 import { useGameAudio } from "@/game/audio/useGameAudio";
 
 /**
  * HeroImpactCity — the cinematic full-page hero.
  *
- * Image-first design: if a generated hero image exists at
- * /assets/impact-city/hero/hero-main.png it becomes the background with
- * claymation texture overlays. Otherwise falls back to CSS-drawn props.
+ * Three background layers, bottom → top:
+ *   1. RustgardenWorld  — the real World Labs Rustgarden 3D world, embedded
+ *                         as a drag-to-pan 360 panorama. Always present.
+ *   2. CSS fallback     — only used if the pano fails to load (defensive).
+ *   3. Generated splash — if /assets/impact-city/hero/hero-main.png exists,
+ *                         it layers on top as the cinematic hero art.
  *
  * Drop your generated art into public/assets/impact-city/hero/hero-main.png
  * and it lights up automatically. See docs/prompts/hero-character-image-prompts.md
+ * The Rustgarden panorama lives at public/assets/worldlabs/rustgarden/pano.png
+ * and is mirrored from World Labs Marble (world 12a94092).
  */
 export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -33,7 +39,7 @@ export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
     return () => window.removeEventListener("pointerdown", start);
   }, [audio]);
 
-  // Probe for the generated hero image. If it exists, use it.
+  // Probe for the generated hero image. If it exists, layer it on top.
   useEffect(() => {
     const img = new Image();
     img.onload = () => setHeroImgOk(true);
@@ -47,7 +53,11 @@ export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
       className={`ic-hero ${heroImgOk ? "ic-hero--has-image" : ""}`}
       aria-labelledby="ic-hero-title"
     >
-      {heroImgOk ? (
+      {/* Layer 1 — the real Rustgarden 3D world, always on. */}
+      <RustgardenWorld interactive={!heroImgOk} />
+
+      {/* Layer 2 — generated splash on top when present. */}
+      {heroImgOk && (
         <div className="ic-hero__art" aria-hidden="true">
           <img
             src="/assets/impact-city/hero/hero-main.png"
@@ -58,14 +68,14 @@ export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
           <EmeraldTabletGlow />
           <CosmosFlight />
         </div>
-      ) : (
-        <div className="ic-hero__bg" aria-hidden="true">
-          <div className="ic-hero__skyline" />
-          <div className="ic-hero__vines" />
-          <div className="ic-hero__doorway" />
+      )}
+
+      {/* Decorative CSS props (tablet glow + Cosmos) when no splash yet. */}
+      {!heroImgOk && (
+        <>
           <EmeraldTabletGlow />
           <CosmosFlight />
-        </div>
+        </>
       )}
 
       <HeroSoundToggle />

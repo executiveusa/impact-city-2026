@@ -11,6 +11,37 @@ Enforced by the `asset-pipeline-manager` skill.
 The current build uses pure CSS for the Rustgarden stage, character "voice"
 panels, mission cards, and UI. No image assets are required to play.
 
+## World Labs Rustgarden world (embedded)
+
+A real 3D Rustgarden was generated on 2026-06-22 via World Labs Marble
+(`marble-1.1`, world_id `12a94092-2411-48d0-8a9e-6a2c0804348e`, 1580 credits).
+The equirectangular panorama (4608×2304) is mirrored locally so the embed
+survives any CDN expiry:
+
+```
+public/assets/worldlabs/rustgarden/
+  pano.png          # 12MB equirect panorama (drag-to-pan 360)
+  thumbnail.webp    # 27KB blurred placeholder
+```
+
+Embedded into the hero via `src/game/components/hero/RustgardenWorld.tsx`
+as a drag-to-pan background. The full walkable Marble viewer is linked in a
+new tab ("⟶ Step into Rustgarden 3D") because World Labs' viewer page sets
+`X-Frame-Options: DENY` / CSP `frame-ancestors 'none'` and cannot be
+iframed directly.
+
+Raw asset URLs (World Labs CDN, may expire — local mirror is canonical):
+- Pano: `https://cdn.marble.worldlabs.ai/12a94092.../d49f9402..._panos/rgb_0.png`
+- Splats: `100k / 150k / 500k / full-res` `.spz`
+- Collider mesh: `07902c91.glb`
+- Viewer: `https://marble.worldlabs.ai/world/12a94092-2411-48d0-8a9e-6a2c0804348e`
+
+Generation response preserved at
+`public/assets/worldlabs/rustgarden-world-response.json` and manifest at
+`public/assets/worldlabs/worldlabs-manifest.json`.
+
+
+
 ## Folder structure (created)
 
 ```
