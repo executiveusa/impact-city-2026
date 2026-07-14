@@ -2,28 +2,34 @@ import { useEffect, useRef, useState } from "react";
 import { buildHeroEntrance } from "@/game/animations/heroTimelines";
 import { CosmosFlight, EmeraldTabletGlow } from "./CosmosFlight";
 import { HeroSoundToggle } from "./HeroSoundToggle";
+import { HeroVideo } from "./HeroVideo";
 import { RustgardenWorld } from "./RustgardenWorld";
 import { useGameAudio } from "@/game/audio/useGameAudio";
 
 /**
  * HeroImpactCity — the cinematic full-page hero.
  *
- * Three background layers, bottom → top:
- *   1. RustgardenWorld  — the real World Labs Rustgarden 3D world, embedded
- *                         as a drag-to-pan 360 panorama. Always present.
- *   2. CSS fallback     — only used if the pano fails to load (defensive).
- *   3. Generated splash — if /assets/impact-city/hero/hero-main.png exists,
- *                         it layers on top as the cinematic hero art.
+ * Four background layers, bottom → top (each beats the one below it when
+ * present):
+ *   z0  RustgardenWorld  — the real World Labs Rustgarden 3D world, embedded
+ *                          as a drag-to-pan 360 panorama. Always present.
+ *   z1  HeroVideo        — if /assets/impact-city/hero/hero.mp4 exists,
+ *                          a full-page cinematic video (Fal-rendered).
+ *   z2  generated splash — if /assets/impact-city/hero/hero-main.png exists,
+ *                          it layers on top as the art-directed hero art.
+ *   z3  hero content     — title, subtitle, CTAs, sound toggle.
  *
  * Drop your generated art into public/assets/impact-city/hero/hero-main.png
- * and it lights up automatically. See docs/prompts/hero-character-image-prompts.md
- * The Rustgarden panorama lives at public/assets/worldlabs/rustgarden/pano.png
- * and is mirrored from World Labs Marble (world 12a94092).
+ * and it lights up automatically. Drop a video into hero.mp4 and it becomes
+ * the dominant background. See docs/prompts/hero-character-image-prompts.md
+ * and docs/prompts/fal-hero-video.md. The Rustgarden panorama lives at
+ * public/assets/worldlabs/rustgarden/pano.png (World Labs Marble world 12a94092).
  */
 export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const audio = useGameAudio();
   const [heroImgOk, setHeroImgOk] = useState(false);
+  const [hasVideo, setHasVideo] = useState(false);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -54,9 +60,12 @@ export function HeroImpactCity({ onPlay }: { onPlay: () => void }) {
       aria-labelledby="ic-hero-title"
     >
       {/* Layer 1 — the real Rustgarden 3D world, always on. */}
-      <RustgardenWorld interactive={!heroImgOk} />
+      <RustgardenWorld interactive={!heroImgOk && !hasVideo} />
 
-      {/* Layer 2 — generated splash on top when present. */}
+      {/* Layer 2 — cinematic video hero (Fal-rendered MP4) when present. */}
+      <HeroVideo onReady={() => setHasVideo(true)} />
+
+      {/* Layer 3 — generated splash on top when present. */}
       {heroImgOk && (
         <div className="ic-hero__art" aria-hidden="true">
           <img
