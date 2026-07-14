@@ -127,7 +127,15 @@ function reducer(state: GameSaveState, action: Action): GameSaveState {
         rebuiltAssetIds: [...state.rebuiltAssetIds, asset.id],
         scrap: state.scrap - asset.scrapCost,
         impactEvents,
-        screen: "dashboard",
+        // After the FIRST rebuild purchase AND all 3 missions done, route to
+        // the finale (the demo's emotional climax). Otherwise show the impact
+        // dashboard as before. Subsequent purchases after the finale route to
+        // dashboard normally.
+        screen:
+          state.completedMissionIds.length >= MISSION_ORDER.length &&
+          state.rebuiltAssetIds.length === 0
+            ? "finale"
+            : "dashboard",
       };
     }
 

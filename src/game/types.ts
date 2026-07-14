@@ -186,7 +186,8 @@ export type GameScreen =
   | "codex"
   | "dashboard"
   | "rebuild"
-  | "settings";
+  | "settings"
+  | "finale";
 
 export interface GameSaveState {
   version: number;

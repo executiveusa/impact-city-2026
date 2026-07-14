@@ -1,6 +1,7 @@
 import { useGame } from "../state/GameContext";
 import { summarizeImpact, CAUSE_LABELS, STATUS_LABELS } from "../systems/impactEngine";
 import type { RealWorldCause } from "../types";
+import { MISSION_ORDER } from "../types";
 
 /**
  * ImpactDashboard — transparent totals + recent events + the simulated-only
@@ -10,6 +11,8 @@ export function ImpactDashboard() {
   const { state, dispatch } = useGame();
   const s = summarizeImpact(state.impactEvents);
   const causeOrder: RealWorldCause[] = ["food", "water", "energy", "shelter", "education"];
+  // Show the finale button once all 3 missions are done, regardless of rebuild.
+  const finaleReady = state.completedMissionIds.length >= MISSION_ORDER.length;
 
   return (
     <div className="ic-dashboard" role="region" aria-label="Impact dashboard">
@@ -73,6 +76,15 @@ export function ImpactDashboard() {
           are connected.
         </p>
       </section>
+
+      {finaleReady && (
+        <button
+          className="ic-btn ic-btn--primary"
+          onClick={() => dispatch({ type: "SET_SCREEN", screen: "finale" })}
+        >
+          🕯 View the finale
+        </button>
+      )}
 
       <button
         className="ic-btn ic-btn--link"

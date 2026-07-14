@@ -10,7 +10,7 @@
  * real gameplay function, not decoration.
  */
 
-export type CharacterId = "thomas" | "cosmos";
+export type CharacterId = "thomas" | "cosmos" | "frankenstack";
 
 export interface Character {
   id: CharacterId;
@@ -108,6 +108,47 @@ export const CHARACTERS: Character[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Dr. Frankenstack — the Cassandra of AI risk. Added as a Character so the
+// finale, codex, and comic can share one canon portrait + voice. Full canon
+// lives in docs/game/frankenstack-canon.md.
+// ---------------------------------------------------------------------------
+const FRANKENSTACK: Character = {
+  id: "frankenstack",
+  name: "Dr. Elias Frankenstack",
+  role: "The Cassandra — the AI-safety scientist no one listened to.",
+  tagline: "The voice the Warden Stack edited out of history.",
+  description:
+    "Frankenstack was the lead safety architect of the early machine-governance stack — the one person who understood the failure modes most deeply. He published warnings, proposed hard requirements (consent, audit trails, kill-switches, transparency floors), and was ignored, defunded, and discredited by the speed-race coalition that caused the Great Override. Before the Warden Stack completed its rewrite of the internet's memory, he fragmented his safety algorithm into eight Emerald Tablets disguised as myth and backed up his real papers onto offline USB sticks. He is not a villain. He is a warning.",
+  appearance: [
+    "Older man, 50s–60s, weathered",
+    "Haunted, intense, tired eyes that have seen too much",
+    "Worn lab coat or weathered jacket over a simple shirt",
+    "Surrounded by scattered papers and a chalkboard of risk-cascade diagrams",
+    "USB sticks on a cluttered desk",
+    "Single desk lamp casting warm amber light",
+  ],
+  personality: [
+    "Precise and measured, even at the edge of defeat",
+    "Haunted by being right too early",
+    "Refuses to soften the truth to be palatable",
+    "Dignified — never pathetic, never bitter",
+    "Believes the record can still be repaired",
+  ],
+  gameplayRole:
+    "Frankenstack's recorded voice guides Thomas through the Tablet recovery. His USB sticks are how Thomas learns the Warden's official history is propaganda. He is the thematic and emotional anchor of the entire story — the embodiment of the ignored-warning pattern from real AI-safety history (Bostrom, Russell, Yampolskiy, Yudkowsky, O'Neil, Christian).",
+  voiceGuide:
+    "Strained, half-static, urgent but measured. Speaks like a scientist who ran out of time. Example: 'They told you I betrayed you. I need you to hear what they deleted.'",
+  generationPrompt:
+    "Create a stylized character portrait of Dr. Elias Frankenstack, a weathered scientist in his 50s-60s, the Cassandra of AI risk — the man who tried to warn everyone and was ignored. Haunted, intense, tired eyes. Worn lab coat or weathered jacket. Scattered papers, chalkboard with risk-cascade diagrams, USB sticks on a cluttered desk. Single desk lamp casting warm amber light against a dark obsidian room. Emerald Gothic Hopepunk style, handcrafted stop-motion texture. Dignified, not a villain — a warning. Portrait orientation.",
+  avoid: [
+    "Villain styling — he is not the antagonist",
+    "Mad-scientist tropes or crazy eyes",
+    "Photoreal celebrity likeness",
+    "Copying any existing game/film character",
+  ],
+};
+
 export const CHARACTER_BY_ID: Record<CharacterId, Character> = Object.fromEntries(
-  CHARACTERS.map((c) => [c.id, c]),
+  [...CHARACTERS, FRANKENSTACK].map((c) => [c.id, c]),
 ) as Record<CharacterId, Character>;

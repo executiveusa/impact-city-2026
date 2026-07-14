@@ -6,19 +6,25 @@ import { OPENING_NARRATION } from "../data/dialogue";
  * StoryIntro — a short cinematic text/comic sequence with simple animation.
  * Scene beats per spec §3.B. The whole sequence is skippable; on completion
  * the player lands in Rustgarden (hub). Subtitles are always on (a11y).
+ *
+ * Reduced-motion respect: when state.reducedMotion is on, beats do NOT
+ * auto-advance — the player reads at their own pace and taps Continue.
+ * (Previously this docstring claimed reduced-motion respect but the code
+ * used a fixed 4200ms timer regardless. Fixed.)
  */
 export function StoryIntro() {
-  const { dispatch } = useGame();
+  const { state, dispatch } = useGame();
   const [beat, setBeat] = useState(0);
   const total = OPENING_NARRATION.length;
 
-  // Auto-advance each beat, with reduced-motion respect via longer hold for the
-  // narration lines so they can be read.
+  // Auto-advance each beat ONLY when reduced-motion is off. When it's on,
+  // the player controls pacing via the Continue button (no timer).
   useEffect(() => {
+    if (state.reducedMotion) return; // manual pacing
     if (beat >= total) return;
     const t = setTimeout(() => setBeat((b) => b + 1), 4200);
     return () => clearTimeout(t);
-  }, [beat, total]);
+  }, [beat, total, state.reducedMotion]);
 
   const finish = () => dispatch({ type: "MARK_INTRO_SEEN" });
 

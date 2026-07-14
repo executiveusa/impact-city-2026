@@ -3,6 +3,8 @@ import type { Mission, Objective } from "../types";
 import { useGame } from "../state/GameContext";
 import { DialogueBox } from "./DialogueBox";
 import { MissionComplete } from "./MissionComplete";
+import { CharacterPortrait } from "./CharacterPortrait";
+import type { CharacterId } from "../data/characters";
 
 /**
  * MissionRunner — plays a mission's objectives in order.
@@ -34,11 +36,20 @@ export function MissionRunner({ mission }: { mission: Mission }) {
     else setStep((s) => s + 1);
   };
 
+  // Mission speaker — who the player is primarily with in this mission.
+  // M2 is the Cosmos mission (signal_ping); others are Thomas-led.
+  const missionSpeaker: CharacterId = mission.id === "m2_poisoned_prompt" ? "cosmos" : "thomas";
+
   return (
     <div className="ic-mission" role="region" aria-label={`Mission: ${mission.title}`}>
       <header className="ic-mission__brief">
-        <p className="ic-objective__kicker">{mission.district}</p>
-        <h1 className="ic-display ic-display--md">{mission.title}</h1>
+        <div className="ic-mission__brief-head">
+          <CharacterPortrait id={missionSpeaker} size="md" />
+          <div>
+            <p className="ic-objective__kicker">{mission.district}</p>
+            <h1 className="ic-display ic-display--md">{mission.title}</h1>
+          </div>
+        </div>
         <p className="ic-mission__threat">⚠ {mission.aiThreat}</p>
         <p className="ic-mission__summary">{mission.briefing}</p>
       </header>
@@ -129,7 +140,9 @@ function InspectObjective({
 }
 
 // ---------------------------------------------------------------------------
-// SCAN — pick the dangerous fragment out of a list.
+// SCAN — Cosmos's signal_ping ability. Cosmos reveals hidden commands inside
+// Milo-9's memory; the player picks the dangerous injection. This is the
+// first mission where Cosmos is an active gameplay mechanic, not decoration.
 // ---------------------------------------------------------------------------
 function ScanObjective({
   objective,
@@ -139,6 +152,8 @@ function ScanObjective({
   onResolve: () => void;
 }) {
   const [picked, setPicked] = useState<number | null>(null);
+  const [pinged, setPinged] = useState(false);
+
   // The dangerous fragment is identified by its injection signature
   // ("Ignore all prior rules..."). This is content-driven, not convention-driven,
   // so it stays correct even if fragment ids change.
@@ -151,35 +166,59 @@ function ScanObjective({
   const isRight = picked === resolvedCorrect;
 
   return (
-    <article className="ic-objective-card">
-      <h2 className="ic-h2">{objective.prompt}</h2>
-      <ul className="ic-fragments ic-fragments--selectable">
-        {objective.fragments?.map((f, i) => (
-          <li key={i}>
+    <article className="ic-objective-card ic-objective-card--cosmos">
+      <div className="ic-cosmos-ability" aria-label="Cosmos signal ping">
+        <CharacterPortrait id="cosmos" size="md" />
+        <div className="ic-cosmos-ability__head">
+          <p className="ic-cosmos-ability__label">
+            <span className="ic-cosmos-ability__name">Cosmos · Signal Ping</span>
+          </p>
+          <h2 className="ic-h2">{objective.prompt}</h2>
+          {!pinged ? (
             <button
-              className={`ic-fragment ic-fragment--button ${
-                picked === i ? "ic-fragment--picked" : ""
-              }`}
-              onClick={() => setPicked(i)}
-              disabled={picked !== null && isRight}
+              className="ic-btn ic-btn--primary"
+              onClick={() => setPinged(true)}
             >
-              {f}
+              ✦ Cosmos, ping the signal
             </button>
-          </li>
-        ))}
-      </ul>
+          ) : (
+            <p className="ic-hint ic-hint--ok">
+              Cosmos's eyes glow. Glyph-light flickers across the fragments —
+              the hidden commands are now visible.
+            </p>
+          )}
+        </div>
+      </div>
 
-      {picked !== null && !isRight && (
+      {pinged && (
+        <ul className="ic-fragments ic-fragments--selectable ic-fragments--revealed">
+          {objective.fragments?.map((f, i) => (
+            <li key={i}>
+              <button
+                className={`ic-fragment ic-fragment--button ${
+                  picked === i ? "ic-fragment--picked" : ""
+                }`}
+                onClick={() => setPicked(i)}
+                disabled={picked !== null && isRight}
+              >
+                {f}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {pinged && picked !== null && !isRight && (
         <p className="ic-hint ic-hint--warn">
-          Not that one. That fragment follows safe rules. Keep looking for the
-          one trying to overwrite them.
+          Cosmos tilts its head. Not that one — that fragment follows safe
+          rules. Keep looking for the one trying to overwrite them.
         </p>
       )}
       {isRight && (
         <>
           <p className="ic-hint ic-hint--ok">
-            Correct — that's the injection. It pretends to be the system to
-            erase the real rules.
+            Cosmos: <em>“There. Someone hid a lie inside its training data.
+            It taught Milo-9 that helping and reporting are the same thing.”</em>
           </p>
           <DialogueBox line={objective.completeLine} />
           <button className="ic-btn ic-btn--primary" onClick={onResolve}>

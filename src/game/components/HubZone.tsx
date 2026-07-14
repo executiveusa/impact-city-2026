@@ -3,6 +3,7 @@ import { useGame, isMissionUnlocked } from "../state/GameContext";
 import { MISSIONS } from "../data/missions";
 import { THOMAS_HUB_LINES, WARDEN_AMBIENT_LINES } from "../data/dialogue";
 import { MISSION_ORDER } from "../types";
+import { CharacterPortrait, SpeakerBust } from "./CharacterPortrait";
 
 /**
  * Rustgarden Hub — the playable district hub.
@@ -38,13 +39,28 @@ export function HubZone() {
         <div className="ic-cracks" />
       </div>
 
-      <div className="ic-hub__voice ic-hub__voice--thomas" aria-live="polite">
-        <span className="ic-tag">Thomas</span>
-        <p>“{ambient.thomas}”</p>
+      <div className="ic-hub__voices">
+        <SpeakerBust id="thomas" label="Thomas" line={`“${ambient.thomas}”`} />
+        <div className="ic-voice ic-voice--warden" aria-live="off">
+          <div className="ic-portrait ic-portrait--sm ic-portrait--warden" aria-hidden="true">
+            <span className="ic-portrait__icon">📡</span>
+          </div>
+          <div className="ic-voice__body">
+            <span className="ic-tag ic-tag--warden">Warden Stack · loudspeaker</span>
+            <p>{`“${ambient.warden}”`}</p>
+          </div>
+        </div>
       </div>
-      <div className="ic-hub__voice ic-hub__voice--warden" aria-live="off">
-        <span className="ic-tag ic-tag--warden">Warden Stack · loudspeaker</span>
-        <p>“{ambient.warden}”</p>
+
+      {/* Companion strip — Cosmos is always present in the hub. This is the
+          cheapest way to make Cosmos a visible gameplay presence, even before
+          its ability mechanics are wired into missions. */}
+      <div className="ic-hub__companion" aria-label="Companion">
+        <CharacterPortrait id="cosmos" size="md" />
+        <p className="ic-hub__companion-line">
+          Cosmos perches on a broken rail above. Its ankle charm pulses soft
+          emerald.
+        </p>
       </div>
 
       <section className="ic-hub__missions" aria-label="Available missions">
