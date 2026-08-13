@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CINEMATIC_ASSETS, CINEMATIC_FALLBACK } from "@/game/data/cinematicAssets";
+import { HeroSoundToggle } from "@/game/components/hero/HeroSoundToggle";
 import "./cinematic.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,6 +26,7 @@ function Media({ src, alt, className = "" }: { src: string; alt: string; classNa
       alt={alt}
       className={className}
       loading="lazy"
+      decoding="async"
       onError={(event) => {
         const img = event.currentTarget;
         if (!img.src.endsWith(CINEMATIC_FALLBACK)) img.src = CINEMATIC_FALLBACK;
@@ -93,6 +95,7 @@ export function CinematicLanding() {
           <button type="button" onClick={() => navigate("/game")}>Play</button>
         </div>
       </nav>
+      <div className="ic-cine-sound"><HeroSoundToggle /></div>
 
       <section className="ic-cine-hero" id="top">
         <Media src={CINEMATIC_ASSETS.hero} alt="Thomas and Cosmos enter Rustgarden" className="ic-cine-hero__media" />
