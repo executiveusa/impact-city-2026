@@ -54,14 +54,6 @@ export function CinematicLanding() {
         });
       });
 
-      gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
-        gsap.to(el, {
-          yPercent: -12,
-          ease: "none",
-          scrollTrigger: { trigger: el.parentElement, start: "top bottom", end: "bottom top", scrub: true },
-        });
-      });
-
       const tabletTrack = root.querySelector<HTMLElement>(".ic-cine-tablets__track");
       const tabletSection = root.querySelector<HTMLElement>(".ic-cine-tablets");
       if (tabletTrack && tabletSection && window.innerWidth > 900) {
@@ -115,7 +107,7 @@ export function CinematicLanding() {
       </section>
 
       <section className="ic-cine-chapter ic-cine-chapter--split" id="story">
-        <div className="ic-cine-chapter__media"><Media src={CINEMATIC_ASSETS.thomas} alt="Thomas" data-parallax={undefined as never} className="ic-cine-image" /></div>
+        <div className="ic-cine-chapter__media"><Media src={CINEMATIC_ASSETS.thomas} alt="Thomas" className="ic-cine-image" /></div>
         <div className="ic-cine-chapter__copy" data-reveal>
           <p className="ic-cine-kicker">01 · Thomas</p>
           <h2>NO HOME.<br />NO SCORE.<br />STILL HUMAN.</h2>
