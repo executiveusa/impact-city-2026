@@ -1,0 +1,28 @@
+{
+  "generated_at": "2026-06-22T03:18:59Z",
+  "provider": "World Labs Marble",
+  "api_base": "https://api.worldlabs.ai/marble/v1",
+  "model": "marble-1.1",
+  "worlds": [
+    {
+      "world_id": "12a94092-2411-48d0-8a9e-6a2c0804348e",
+      "operation_id": "1d81a959-97e0-4d0f-ac34-e479e2b36e8d",
+      "display_name": "Rustgarden - Impact City",
+      "prompt": "Ruined 2056 city district called Rustgarden. Emerald green light leaks from broken machines. Vines and moss reclaim cracked concrete. A distant machine watchtower watches over abandoned elevated roads. Rainwater collectors and handmade resistance banners. Hopeful community rebuild zone. Handcrafted Gothic magical realism, stop-motion texture, dark but hopeful.",
+      "tags": ["impact-city", "rustgarden", "emerald-gothic"],
+      "model": "marble-1.1",
+      "cost": { "total_credits": 1580, "world_generation": 1500, "pano_generation": 80 },
+      "world_marble_url": "https://marble.worldlabs.ai/world/12a94092-2411-48d0-8a9e-6a2c0804348e",
+      "assets": {
+        "collider_mesh_url": "https://cdn.marble.worldlabs.ai/12a94092-2411-48d0-8a9e-6a2c0804348e/07902c91.glb",
+        "pano_url": "https://cdn.marble.worldlabs.ai/12a94092-2411-48d0-8a9e-6a2c0804348e/d49f9402-c250-4aa0-9255-20a1159250e8_pano.jpg",
+        "splats_500k": "https://cdn.marble.worldlabs.ai/12a94092-2411-48d0-8a9e-6a2c0804348e/0a1680e9-6219-4d81-9fcd-0b7f5f9e8e8c_500k.spz",
+        "thumbnail_url": "https://cdn.marble.worldlabs.ai/12a94092-2411-48d0-8a9e-6a2c0804348e/df0112e1-515c-449a-ae5b-877378b7152a_sand_mpi/thumb.jpg",
+        "caption": "Ruined 2056 city district called Rustgarden. Emerald green light leaks from broken machines. Vines and moss reclaim cracked concrete."
+      },
+      "usage": "Reference world for cinematic pipeline + future Three.js splat viewer. NOT committed as binary — URLs reference the World Labs CDN. See docs/worldlabs/world-generation-prompts.md.",
+      "replacement_status": "generated-reference"
+    }
+  ],
+  "note": "Generated using chat-pasted key (COMPROMISED — rotate). World assets live on World Labs CDN; only metadata is committed here. No API keys in this file."
+}

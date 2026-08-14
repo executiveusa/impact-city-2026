@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-06-22T03:57:21.563013Z",
+  "assets": [
+    {
+      "name": "thomas-placeholder",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "characters/thomas/thomas-placeholder.glb",
+      "size_bytes": 209580,
+      "created_by": "blender/create_thomas_cosmos_turntables.py",
+      "date": "2026-06-22T03:57:18.425852Z",
+      "usage": "Readable-silhouette placeholder. Replace via image->3D->cleanup pipeline.",
+      "replacement_status": "procedural-placeholder"
+    },
+    {
+      "name": "cosmos-placeholder",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "characters/cosmos/cosmos-placeholder.glb",
+      "size_bytes": 243324,
+      "created_by": "blender/create_thomas_cosmos_turntables.py",
+      "date": "2026-06-22T03:57:21.305410Z",
+      "usage": "Readable-silhouette placeholder. Replace via image->3D->cleanup pipeline.",
+      "replacement_status": "procedural-placeholder"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "generated_at": "2026-06-22T03:51:30.199635Z",
+  "assets": [
+    {
+      "name": "emerald-tablet-consent",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/props/emerald-tablet/emerald-tablet-consent.glb",
+      "size_bytes": 14676,
+      "created_by": "blender/create_impact_city_asset_pack.py",
+      "date": "2026-06-22T03:51:24.875331Z",
+      "usage": "MVP placeholder. Replace with production mesh via asset pipeline.",
+      "replacement_status": "procedural-placeholder"
+    },
+    {
+      "name": "warden-terminal",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/props/warden-terminal/warden-terminal.glb",
+      "size_bytes": 3612,
+      "created_by": "blender/create_impact_city_asset_pack.py",
+      "date": "2026-06-22T03:51:25.891735Z",
+      "usage": "MVP placeholder. Replace with production mesh via asset pipeline.",
+      "replacement_status": "procedural-placeholder"
+    },
+    {
+      "name": "rustgarden-gate",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/props/compliance-gate/rustgarden-gate.glb",
+      "size_bytes": 5008,
+      "created_by": "blender/create_impact_city_asset_pack.py",
+      "date": "2026-06-22T03:51:26.850834Z",
+      "usage": "MVP placeholder. Replace with production mesh via asset pipeline.",
+      "replacement_status": "procedural-placeholder"
+    },
+    {
+      "name": "solar-charging-bench",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/props/solar-bench/solar-charging-bench.glb",
+      "size_bytes": 3724,
+      "created_by": "blender/create_impact_city_asset_pack.py",
+      "date": "2026-06-22T03:51:27.717468Z",
+      "usage": "MVP placeholder. Replace with production mesh via asset pipeline.",
+      "replacement_status": "procedural-placeholder"
+    },
+    {
+      "name": "water-filter-station",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/props/water-filter/water-filter-station.glb",
+      "size_bytes": 15244,
+      "created_by": "blender/create_impact_city_asset_pack.py",
+      "date": "2026-06-22T03:51:28.895698Z",
+      "usage": "MVP placeholder. Replace with production mesh via asset pipeline.",
+      "replacement_status": "procedural-placeholder"
+    },
+    {
+      "name": "learning-kiosk",
+      "version": "0.1.0-procedural",
+      "license": "project-original",
+      "format": "glb",
+      "path": "public/assets/3d/impact-city/props/learning-kiosk/learning-kiosk.glb",
+      "size_bytes": 3672,
+      "created_by": "blender/create_impact_city_asset_pack.py",
+      "date": "2026-06-22T03:51:29.866351Z",
+      "usage": "MVP placeholder. Replace with production mesh via asset pipeline.",
+      "replacement_status": "procedural-placeholder"
+    }
+  ]
+}
