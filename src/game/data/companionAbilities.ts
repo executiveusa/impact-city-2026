@@ -6,6 +6,8 @@
  * roadmap (Episodes 2–6). See docs/game/character-bible-thomas-cosmos.md.
  */
 
+import type { SoundId } from "@/game/audio/soundManifest";
+
 export type CompanionAbilityId =
   | "scout"
   | "signal_ping"
@@ -26,7 +28,7 @@ export interface CompanionAbility {
   /** MVP status: active in the slice, or roadmap. */
   status: "active" | "roadmap";
   /** Sound cue id from the sound manifest. */
-  soundCue: string;
+  soundCue: SoundId;
 }
 
 export const COMPANION_ABILITIES: CompanionAbility[] = [
