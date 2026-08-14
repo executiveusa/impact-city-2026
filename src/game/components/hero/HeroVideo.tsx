@@ -109,7 +109,6 @@ export function HeroVideo({ onReady }: { onReady?: () => void }) {
         muted
         loop
         playsInline
-        // @ts-expect-error — disablePictureInPicture is a valid HTML attribute
         disablePictureInPicture
         preload="metadata"
         // Don't expose controls; this is a background layer.
