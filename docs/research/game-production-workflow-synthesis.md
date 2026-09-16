@@ -105,3 +105,7 @@ Queries: see stefan-search-raw.txt
 Channel: https://www.youtube.com/@stefan_3d_ai/videos
 Limit: 20 videos, scrape top 6 for full markdown
 ```
+
+## MCP-driven non-humanoid rigging (Stefan 3D, 2026-09-16 Short)
+
+New pointer from the "GPT-6 in Blender" Short: GPT-6 + Blender MCP can rig and animate QUADRUPED characters, not just humanoids. Relevant to creature assets (Synthia cat, mounts, familiars). Technique to absorb into the pi-game-creator creature lane: drive Blender MCP with a rigging/animation skill pack for non-humanoid skeletons instead of hand-rigging. Source: https://youtube.com/shorts/2qM93WXeKdY (full tutorial on the Stefan 3D channel; pull it into this synthesis when the creature lane opens).
