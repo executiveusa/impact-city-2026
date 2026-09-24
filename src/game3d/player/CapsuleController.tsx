@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { CapsuleCollider, RigidBody, useRapier, type RapierRigidBody } from "@react-three/rapier";
 import * as THREE from "three";
@@ -12,6 +13,8 @@ const WALK = 1.4; // m/s, the Marble bubble is ~5 m across
 const SPRINT = 2.4;
 const JUMP_V = 3.2;
 const GRAVITY = 9.81;
+const THOMAS_URL = "/assets/3d/impact-city/characters/thomas/thomas-placeholder.glb";
+const STEP = 1 / 12; // character poses update "on twos" (04-art-direction)
 
 /**
  * P0-3: kinematic capsule on the Marble collider with a third-person follow camera.
@@ -19,6 +22,20 @@ const GRAVITY = 9.81;
  */
 export function CapsuleController({ spawn, autopilot, onGrounded }: { spawn: THREE.Vector3; autopilot: boolean; onGrounded?: (p: THREE.Vector3) => void }) {
   const body = useRef<RapierRigidBody>(null);
+  const { scene: thomasScene } = useGLTF(THOMAS_URL);
+  const thomas = useMemo(() => {
+    const m = thomasScene.clone(true);
+    const box = new THREE.Box3().setFromObject(m);
+    const size = box.getSize(new THREE.Vector3());
+    const s = (2 * (HALF_HEIGHT + RADIUS)) / Math.max(size.y, 1e-3);
+    m.scale.setScalar(s);
+    const b2 = new THREE.Box3().setFromObject(m);
+    m.position.y = -(HALF_HEIGHT + RADIUS) - b2.min.y;
+    return m;
+  }, [thomasScene]);
+  const visual = useRef<THREE.Group>(null);
+  const facing = useRef(0);
+  const stepAcc = useRef(0);
   const { world } = useRapier();
   const input = useMemo(() => createInput(autopilot), [autopilot]);
   const ctrl = useMemo(() => {
@@ -81,6 +98,15 @@ export function CapsuleController({ spawn, autopilot, onGrounded }: { spawn: THR
       mark("playerGrounded");
       onGrounded?.(new THREE.Vector3(next.x, next.y - HALF_HEIGHT - RADIUS, next.z));
     }
+    // Stepped facing + walk bob, sampled on twos for the stop-motion read.
+    stepAcc.current += dt;
+    if (visual.current && stepAcc.current >= STEP) {
+      if (tmp.dir.lengthSq() > 0.01) facing.current = Math.atan2(tmp.dir.x, tmp.dir.z);
+      visual.current.rotation.y = facing.current;
+      const moving = tmp.dir.lengthSq() > 0.01 && grounded.current;
+      visual.current.position.y = moving ? Math.abs(Math.sin(state.clock.elapsedTime * (inp.sprint ? 14 : 9))) * 0.025 : 0;
+      stepAcc.current = 0;
+    }
     // Third-person camera
     tmp.target.set(next.x, next.y + 0.35, next.z);
     const dist = 1.9;
@@ -98,10 +124,9 @@ export function CapsuleController({ spawn, autopilot, onGrounded }: { spawn: THR
   return (
     <RigidBody ref={body} type="kinematicPosition" colliders={false} position={spawn.toArray()} enabledRotations={[false, false, false]}>
       <CapsuleCollider args={[HALF_HEIGHT, RADIUS]} />
-      <mesh castShadow>
-        <capsuleGeometry args={[RADIUS, HALF_HEIGHT * 2, 6, 12]} />
-        <meshStandardMaterial color="#d9a46b" roughness={0.9} />
-      </mesh>
+      <group ref={visual}>
+        <primitive object={thomas} />
+      </group>
     </RigidBody>
   );
 }
