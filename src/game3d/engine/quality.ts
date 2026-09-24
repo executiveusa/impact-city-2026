@@ -21,5 +21,8 @@ export const QUALITY: Record<QualityTier, QualityConfig> = {
 
 export function tierFromQuery(search: string): QualityTier {
   const q = new URLSearchParams(search).get("quality");
-  return q === "low" || q === "high" ? q : "med";
+  if (q === "low" || q === "med" || q === "high") return q;
+  // Phones and tablets default to the 100k splat + dpr 1.
+  const coarse = typeof matchMedia !== "undefined" && matchMedia("(pointer: coarse)").matches;
+  return coarse ? "low" : "med";
 }

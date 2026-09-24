@@ -3,16 +3,16 @@ import { Link } from "react-router-dom";
 import { Canvas3D } from "@/game3d/engine/Canvas3D";
 import { tierFromQuery } from "@/game3d/engine/quality";
 import { useDecayStore } from "@/game3d/world/decay/decayStore";
-import { EncounterOverlay } from "@/game3d/encounters/EncounterOverlay";
+import { EncounterOverlay, btn, panel } from "@/game3d/encounters/EncounterOverlay";
 import { EvidenceLedger } from "@/game3d/ui/EvidenceLedger";
-import { useCh1 } from "@/game3d/encounters/ch1Store";
+import { TouchControls } from "@/game3d/ui/TouchControls";
+import { useEpisode } from "@/game3d/encounters/ch1Store";
 import { playerState } from "@/game3d/player/playerState";
-import { BARKS } from "@/game3d/cosmos/barks";
 import { soundManager } from "@/game/audio/soundManager";
 
 /**
- * /play: Phase 0 feasibility spike (08-build-plan P0). Behind a flag; /game (2D) is untouched.
- * Query: ?quality=low|med|high  &auto=1 (scripted walk)  &perf=1 (record frame times)  &collider=1
+ * /play: Impact City: The Emerald Algorithm, Episode 1 in 3D (playable build).
+ * Query: ?quality=low|med|high  &auto=1 (scripted walk)  &perf=1 (record frame times)  &collider=1  &fps=1
  */
 export default function Game3D() {
   const params = new URLSearchParams(location.search);
@@ -20,31 +20,23 @@ export default function Game3D() {
   const autopilot = params.get("auto") === "1";
   const perf = params.get("perf") === "1";
   const showCollider = params.get("collider") === "1";
-  const decay = useDecayStore((s) => s.decay["p0-props"] ?? 0);
-  const cycle = useDecayStore((s) => s.cycle);
+  const showFps = params.get("fps") === "1" || perf;
+  const touch = typeof matchMedia !== "undefined" && (matchMedia("(pointer: coarse)").matches || "ontouchstart" in window);
+  const [started, setStarted] = useState(autopilot || perf);
   const [fps, setFps] = useState(0);
+  const cycle = useDecayStore((s) => s.cycle);
+  const save = useEpisode((s) => s.save);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "KeyG") cycle();
-      const st = useCh1.getState();
+      const st = useEpisode.getState();
+      if (e.code === "KeyG" && showFps) cycle();
       if (e.code === "KeyE" && !st.overlayOpen) st.open();
       if (e.code === "KeyF" && !st.overlayOpen) st.ping();
       if (e.code === "Escape" && st.overlayOpen) st.close();
     };
-    // Movement freezes while an encounter overlay or the chapter sting is up.
-    const unsub = useCh1.subscribe((s) => (playerState.locked = s.overlayOpen || s.sting));
-    const startAudio = () => {
-      soundManager.resume();
-      soundManager.startLoop("ambient_rustgarden_loop");
-      removeEventListener("pointerdown", startAudio);
-      removeEventListener("keydown", startAudio);
-    };
-    addEventListener("pointerdown", startAudio);
-    addEventListener("keydown", startAudio);
-    const st = useCh1.getState();
-    if (st.currentEncounterId() === "m1_o1") st.say("Nana Ife", BARKS.nanaOpening, 7000);
     addEventListener("keydown", onKey);
+    const unsub = useEpisode.subscribe((s) => (playerState.locked = s.overlayOpen || !!s.sting || !!s.ending));
     let frames = 0;
     let last = performance.now();
     let raf = 0;
@@ -57,32 +49,51 @@ export default function Game3D() {
       }
       raf = requestAnimationFrame(loop);
     };
-    raf = requestAnimationFrame(loop);
+    if (showFps) raf = requestAnimationFrame(loop);
     return () => {
       removeEventListener("keydown", onKey);
-      removeEventListener("pointerdown", startAudio);
-      removeEventListener("keydown", startAudio);
       soundManager.stopLoop("ambient_rustgarden_loop");
       unsub();
       cancelAnimationFrame(raf);
     };
-  }, [cycle]);
+  }, [cycle, showFps]);
+
+  const start = () => {
+    soundManager.resume();
+    soundManager.startLoop("ambient_rustgarden_loop");
+    setStarted(true);
+    const st = useEpisode.getState();
+    const ch = st.chapter();
+    if (ch) setTimeout(() => st.say(ch.intro.speaker, ch.intro.line, 8000), 600);
+  };
+  const inProgress = save.completedChapterIds.length > 0 || save.encounterIndex > 0;
 
   return (
     <>
       <Canvas3D tier={tier} autopilot={autopilot} perf={perf} showCollider={showCollider} />
-      <EncounterOverlay />
-      <EvidenceLedger />
-      <div
-        style={{ position: "fixed", top: 8, left: 8, color: "#cfe8d8", font: "12px ui-monospace, monospace", background: "rgba(0,0,0,.45)", padding: "6px 8px", borderRadius: 4, pointerEvents: "none" }}
-      >
-        P0 spike · {tier} · {fps} fps · decay {decay.toFixed(1)}
-        <br />
-        WASD move · Shift sprint · Space jump · drag to look · F Signal Ping · E interact · Tab evidence · G decay test
-      </div>
-      <Link to="/game" style={{ position: "fixed", top: 8, right: 8, color: "#cfe8d8", font: "12px ui-monospace, monospace" }}>
-        2D version
-      </Link>
+      {started && <EncounterOverlay />}
+      {started && <EvidenceLedger />}
+      {started && touch && <TouchControls />}
+      {!started && (
+        <div style={{ ...panel, bottom: "auto", top: "50%", transform: "translate(-50%,-50%)", textAlign: "center" }}>
+          <p style={{ margin: 0, fontSize: 12, letterSpacing: 2, color: "#9fc9b3" }}>EPISODE 1 · PLAYABLE PREVIEW</p>
+          <h1 style={{ fontFamily: "Cinzel, serif", fontWeight: 600, margin: "6px 0 2px" }}>Impact City</h1>
+          <p style={{ fontFamily: "Cinzel, serif", margin: 0 }}>The Emerald Algorithm</p>
+          <p style={{ fontSize: 14 }}>Earth, 2056. A courier named Thomas. A parrot named Cosmos. A machine that edits the record, and five chapters to prove it.</p>
+          <p style={{ fontSize: 13, color: "#9fc9b3" }}>
+            {touch ? "Left stick to move · drag the screen to look · Use near the green marker · Ping to scan · Clues for evidence" : "WASD move · drag to look · E use · F Cosmos Signal Ping · Tab evidence · Space jump · Shift sprint"}
+          </p>
+          <button style={{ ...btn, fontSize: 17, padding: "12px 22px" }} onClick={start}>{inProgress ? "Continue" : "Play"}</button>
+          {inProgress && <button style={{ ...btn, borderColor: "#555" }} onClick={() => { useEpisode.getState().restart(); start(); }}>New game</button>}
+          <p style={{ fontSize: 11, color: "#7fa894", marginBottom: 0 }}>Nonviolent · placeholder art · impact is simulated · the 3D world takes a few seconds to load</p>
+        </div>
+      )}
+      {showFps && (
+        <div style={{ position: "fixed", bottom: 8, left: 8, color: "#cfe8d8", font: "11px ui-monospace, monospace", background: "rgba(0,0,0,.45)", padding: "3px 6px", borderRadius: 4, pointerEvents: "none" }}>
+          {tier} · {fps} fps
+        </div>
+      )}
+      <Link to="/game" style={{ position: "fixed", top: 8, right: 8, color: "#cfe8d8", font: "12px Inter, sans-serif", zIndex: 7 }}>2D version</Link>
     </>
   );
 }

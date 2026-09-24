@@ -4,29 +4,63 @@ vi.mock("@/game/audio/soundManager", () => ({ soundManager: { resume: vi.fn(), p
 const mem = new Map<string, string>();
 vi.stubGlobal("window", { localStorage: { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) } });
 
-describe("chapter 1 flow", () => {
+async function playThrough(wick: "W1" | "W2" | "W3") {
+  const { useEpisode } = await import("./ch1Store");
+  useEpisode.getState().restart();
+  let guard = 0;
+  while (useEpisode.getState().current() && guard++ < 50) {
+    const st = useEpisode.getState();
+    const enc = st.current()!;
+    st.setNear(enc.id);
+    st.open();
+    expect(useEpisode.getState().overlayOpen).toBe(true);
+    if (enc.id === "ch3_vision") st.addEvidence(["E-GRADER"]);
+    if (enc.kind === "persuade") st.setFlag("wick_outcome", wick);
+    useEpisode.getState().completeEncounter();
+    if (useEpisode.getState().sting && !useEpisode.getState().ending) useEpisode.getState().dismissSting();
+  }
+  return useEpisode.getState();
+}
+
+describe("episode 1", () => {
   beforeEach(() => mem.clear());
-  it("runs inspect -> repair -> choose, then awards evidence, rewards and simulated impact", async () => {
-    const { useCh1, CH1 } = await import("./ch1Store");
-    const s = useCh1.getState();
-    expect(s.currentEncounterId()).toBe("m1_o1");
-    // Can't open an encounter from across the map.
-    s.open();
-    expect(useCh1.getState().overlayOpen).toBe(false);
-    for (const id of CH1.encounters) {
-      useCh1.getState().setNear(id);
-      useCh1.getState().open();
-      expect(useCh1.getState().overlayOpen).toBe(true);
-      useCh1.getState().completeEncounter();
-    }
-    const end = useCh1.getState();
-    expect(end.sting).toBe(true);
-    expect(end.currentEncounterId()).toBeNull();
-    expect(end.save.evidence).toContain("E-RECORD-EDIT");
-    expect(end.save.completedMissionIds).toContain("m1_compliance_gate");
-    expect(end.save.impactEvents.length).toBeGreaterThan(0);
+
+  it("won't open an encounter from across the map", async () => {
+    const { useEpisode } = await import("./ch1Store");
+    useEpisode.getState().restart();
+    useEpisode.getState().setNear(null);
+    useEpisode.getState().open();
+    expect(useEpisode.getState().overlayOpen).toBe(false);
+  });
+
+  it("plays all 5 chapters to the best ending", async () => {
+    const end = await playThrough("W1");
+    expect(end.save.completedChapterIds).toHaveLength(5);
+    expect(end.ending).toBe("E-A");
+    expect(end.save.evidence).toEqual(expect.arrayContaining(["E-RECORD-EDIT", "E-SIGNED-INJECTION", "E-BOARD-SCOPE", "E-GRADER", "E-NANA-PAPER"]));
     expect(end.save.impactEvents.every((e) => e.status === "simulated")).toBe(true);
-    // Persisted under the v2 key for resume.
-    expect(JSON.parse(mem.get("impact_city_save_v2")!).completedChapterIds).toContain("ch1_compliance_gate");
+    expect(Object.values(end.save.decay).every((d) => d === 0)).toBe(true);
+    expect(JSON.parse(mem.get("impact_city_save_v2")!).flags.ending).toBe("E-A");
+  });
+
+  it("the grader clock hits zero before the finale", async () => {
+    const { useEpisode } = await import("./ch1Store");
+    useEpisode.getState().restart();
+    let saw0 = false;
+    let guard = 0;
+    while (useEpisode.getState().current() && guard++ < 50) {
+      const st = useEpisode.getState();
+      if (st.chapter()?.id === "ch5_consent" && st.save.graderClock === 0) saw0 = true;
+      st.setNear(st.current()!.id);
+      st.open();
+      st.completeEncounter();
+      useEpisode.getState().dismissSting();
+    }
+    expect(saw0).toBe(true);
+  });
+
+  it("other Wick outcomes give the other endings", async () => {
+    expect((await playThrough("W2")).ending).toBe("E-B");
+    expect((await playThrough("W3")).ending).toBe("E-C");
   });
 });

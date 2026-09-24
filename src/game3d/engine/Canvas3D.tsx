@@ -40,7 +40,7 @@ export function Canvas3D({ tier, autopilot, perf, showCollider }: { tier: Qualit
       dpr={[1, q.maxDpr]}
       camera={{ fov: 60, near: 0.02, far: 100, position: [0, 0.5, 2] }}
       gl={{ antialias: false, powerPreference: "high-performance" }}
-      style={{ position: "fixed", inset: 0, background: "#0b1410" }}
+      style={{ position: "fixed", inset: 0, background: "#0b1410", touchAction: "none" }}
     >
       <color attach="background" args={["#0b1410"]} />
       <hemisphereLight args={["#cfe8d8", "#2a1f16", 0.9]} />

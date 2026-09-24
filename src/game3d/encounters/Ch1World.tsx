@@ -4,62 +4,66 @@ import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { ClayProp } from "../world/ClayProps";
 import { playerState } from "../player/playerState";
-import { ENCOUNTER_PROP, useCh1 } from "./ch1Store";
-import { BARKS } from "../cosmos/barks";
+import { useEpisode } from "./ch1Store";
+import { useDecayStore } from "../world/decay/decayStore";
+import type { PropKey } from "../narrative/episode";
 
-const PROPS = {
-  terminal: { url: "/assets/3d/impact-city/props/warden-terminal/warden-terminal.glb", color: "#4f6f66", height: 0.9, label: "Warden terminal" },
-  kiosk: { url: "/assets/3d/impact-city/props/learning-kiosk/learning-kiosk.glb", color: "#6f5a8a", height: 0.9, label: "Appeal terminal" },
-  gate: { url: "/assets/3d/impact-city/props/compliance-gate/rustgarden-gate.glb", color: "#8a6a4f", height: 1.3, label: "Compliance Gate" },
-} as const;
-type PropKey = keyof typeof PROPS;
-const INTERACT_RADIUS = 0.75;
+const PROPS: Record<PropKey, { url: string; color: string; height: number }> = {
+  terminal: { url: "/assets/3d/impact-city/props/warden-terminal/warden-terminal.glb", color: "#4f6f66", height: 0.9 },
+  kiosk: { url: "/assets/3d/impact-city/props/learning-kiosk/learning-kiosk.glb", color: "#6f5a8a", height: 0.9 },
+  gate: { url: "/assets/3d/impact-city/props/compliance-gate/rustgarden-gate.glb", color: "#8a6a4f", height: 1.3 },
+  filter: { url: "/assets/3d/impact-city/props/water-filter/water-filter-station.glb", color: "#6f8aa0", height: 0.9 },
+  tablet: { url: "/assets/3d/impact-city/props/emerald-tablet/emerald-tablet-consent.glb", color: "#3f8a5f", height: 0.7 },
+  bench: { url: "/assets/3d/impact-city/props/solar-bench/solar-charging-bench.glb", color: "#8a7a4f", height: 0.6 },
+};
+const ORDER: PropKey[] = ["terminal", "kiosk", "gate", "filter", "tablet", "bench"];
+const RING = 1.4;
+const NEAR = 1.0;
 
-/** Chapter 1 set dressing + interactables, laid out on a ring around the first grounded point. */
+/** Episode set: 6 clay props on a ring around the first grounded point; the current encounter's prop is live. */
 export function Ch1World({ feet }: { feet: THREE.Vector3 }) {
-  const anchors = useMemo(() => {
-    const keys: PropKey[] = ["terminal", "kiosk", "gate"];
-    return Object.fromEntries(
-      keys.map((k, i) => {
-        const a = (i / 3) * Math.PI * 2 + 0.6;
-        return [k, new THREE.Vector3(feet.x + Math.cos(a) * 1.4, feet.y, feet.z + Math.sin(a) * 1.4)];
-      })
-    ) as Record<PropKey, THREE.Vector3>;
-  }, [feet]);
-  const nana = useMemo(() => new THREE.Vector3(feet.x - 0.6, feet.y, feet.z + 0.4), [feet]);
+  const anchors = useMemo(
+    () =>
+      Object.fromEntries(
+        ORDER.map((k, i) => {
+          const a = (i / ORDER.length) * Math.PI * 2 + 0.3;
+          return [k, new THREE.Vector3(feet.x + Math.cos(a) * RING, feet.y, feet.z + Math.sin(a) * RING)];
+        })
+      ) as Record<PropKey, THREE.Vector3>,
+    [feet]
+  );
+  const nana = useMemo(() => new THREE.Vector3(feet.x - 0.5, feet.y, feet.z + 0.3), [feet]);
 
   useFrame((state) => {
-    const st = useCh1.getState();
-    const cur = st.currentEncounterId();
+    const st = useEpisode.getState();
+    const cur = st.current();
     let near: string | null = null;
-    if (cur) {
-      const key = ENCOUNTER_PROP[cur] as PropKey;
-      if (anchors[key].distanceTo(playerState.pos) < INTERACT_RADIUS + 0.4) near = cur;
-    }
+    if (cur && anchors[cur.prop].distanceTo(playerState.pos) < NEAR) near = cur.id;
     st.setNear(near);
-    // Idle hint after 45 s without moving (01-game-design §6).
+    // Record decay follows the grader clock (01 §8): max zone decay drives the clay desaturation.
+    const d = Math.max(0, ...Object.values(st.save.decay));
+    const ds = useDecayStore.getState();
+    for (const k of ORDER) if ((ds.decay[`ep-${k}`] ?? -1) !== d) ds.set(`ep-${k}`, d);
     const t = state.clock.elapsedTime;
-    if (cur && !st.overlayOpen && t - playerState.lastMoveAt > 45 && (!st.subtitle || st.subtitle.until < performance.now())) {
+    if (cur && !st.overlayOpen && !st.sting && t - playerState.lastMoveAt > 45 && (!st.subtitle || st.subtitle.until < performance.now())) {
       playerState.lastMoveAt = t;
-      st.say("Cosmos", BARKS.idleHint[cur] ?? "");
+      st.say("Cosmos", cur.hint);
     }
   });
 
   const pingLevel = (key: PropKey) => () => {
-    const st = useCh1.getState();
-    const cur = st.currentEncounterId();
-    const left = st.pingUntil - performance.now();
-    if (!cur || ENCOUNTER_PROP[cur] !== key || left <= 0) return 0;
+    const st = useEpisode.getState();
+    const cur = st.current();
+    if (!cur || cur.prop !== key || st.pingUntil - performance.now() <= 0) return 0;
     return 0.5 + 0.5 * Math.sin(performance.now() / 150);
   };
 
   return (
     <>
-      {(Object.keys(PROPS) as PropKey[]).map((k) => (
-        <ClayProp key={k} url={PROPS[k].url} color={PROPS[k].color} height={PROPS[k].height} position={anchors[k]} zone={`ch1-${k}`} highlight={pingLevel(k)} />
+      {ORDER.map((k) => (
+        <ClayProp key={k} url={PROPS[k].url} color={PROPS[k].color} height={PROPS[k].height} position={anchors[k]} zone={`ep-${k}`} highlight={pingLevel(k)} />
       ))}
       <group position={nana}>
-        {/* Nana Ife placeholder (P1-6): clay capsule until the Phase 4 model lands. */}
         <mesh position={[0, 0.45, 0]}>
           <capsuleGeometry args={[0.16, 0.5, 6, 12]} />
           <meshStandardMaterial color="#7a4e3a" roughness={0.95} />
@@ -68,21 +72,23 @@ export function Ch1World({ feet }: { feet: THREE.Vector3 }) {
           <div style={{ font: "11px Inter, sans-serif", color: "#f3e6c8", background: "rgba(20,14,8,.6)", padding: "1px 6px", borderRadius: 3 }}>Nana Ife</div>
         </Html>
       </group>
-      <NearPrompt anchors={anchors} />
+      <Marker anchors={anchors} />
     </>
   );
 }
 
-function NearPrompt({ anchors }: { anchors: Record<PropKey, THREE.Vector3> }) {
-  const near = useCh1((s) => s.near);
-  const open = useCh1((s) => s.overlayOpen);
-  if (!near || open) return null;
-  const key = ENCOUNTER_PROP[near] as PropKey;
-  const p = anchors[key];
+/** Floating objective marker over the live prop, plus the interact prompt when close. */
+function Marker({ anchors }: { anchors: Record<PropKey, THREE.Vector3> }) {
+  const cur = useEpisode((s) => s.current());
+  const near = useEpisode((s) => s.near);
+  const open = useEpisode((s) => s.overlayOpen || !!s.sting || !!s.ending);
+  if (!cur || open) return null;
+  const p = anchors[cur.prop];
+  const isNear = near === cur.id;
   return (
-    <Html position={[p.x, p.y + PROPS[key].height + 0.2, p.z]} center style={{ pointerEvents: "none" }}>
-      <div style={{ font: "12px Inter, sans-serif", color: "#0b1410", background: "#3dffa0", padding: "2px 8px", borderRadius: 3, whiteSpace: "nowrap" }}>
-        E · {PROPS[key].label}
+    <Html position={[p.x, p.y + PROPS[cur.prop].height + 0.25, p.z]} center style={{ pointerEvents: "none" }}>
+      <div style={{ font: "12px Inter, sans-serif", color: isNear ? "#0b1410" : "#3dffa0", background: isNear ? "#3dffa0" : "rgba(0,0,0,.55)", border: "1px solid #3dffa0", padding: "2px 8px", borderRadius: 4, whiteSpace: "nowrap" }}>
+        {isNear ? `Use · ${cur.label}` : `▼ ${cur.label}`}
       </div>
     </Html>
   );
