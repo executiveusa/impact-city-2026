@@ -21,6 +21,8 @@ You (the builder agent) do **not** need the chat that produced this. Everything 
 | 8 | `06-landing-page-director.md` | Landing page spec |
 | 9 | `07-gauntlet-quality-gates.md` | Scorecards; nothing ships below 8.5 |
 | 10 | `08-build-plan.md` | Phased tickets with acceptance criteria |
+| 11 | `09-BUILDER-GUIDE.md` | Repos, RTK + jCodeMunch setup, operating loop, sources |
+| 12 | `10-ACTIVATION-PROMPT.md` | Copy-paste prompt that starts the builder model |
 
 ## 2. Decisions already locked (do not reopen without the owner)
 
