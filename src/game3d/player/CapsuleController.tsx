@@ -4,6 +4,7 @@ import { CapsuleCollider, RigidBody, useRapier, type RapierRigidBody } from "@re
 import * as THREE from "three";
 import { createInput } from "./input";
 import { mark } from "../engine/perf";
+import { playerState } from "./playerState";
 
 const HALF_HEIGHT = 0.25; // capsule segment half-height (m)
 const RADIUS = 0.18;
@@ -44,6 +45,12 @@ export function CapsuleController({ spawn, autopilot, onGrounded }: { spawn: THR
     if (!b) return;
     const dt = Math.min(rawDt, 1 / 20);
     const inp = input.update(state.clock.elapsedTime);
+    if (playerState.locked) {
+      inp.forward = 0;
+      inp.right = 0;
+      inp.jump = false;
+    }
+    if (inp.forward || inp.right) playerState.lastMoveAt = state.clock.elapsedTime;
     const speed = inp.sprint ? SPRINT : WALK;
     // Camera-relative move
     const fwd = new THREE.Vector3(-Math.sin(inp.yaw), 0, -Math.cos(inp.yaw));
@@ -66,6 +73,9 @@ export function CapsuleController({ spawn, autopilot, onGrounded }: { spawn: THR
     }
     b.setNextKinematicTranslation(next);
     grounded.current = ctrl.computedGrounded();
+    playerState.pos.set(next.x, next.y, next.z);
+    playerState.yaw = inp.yaw;
+    playerState.grounded = grounded.current;
     if (grounded.current && !firstGround.current) {
       firstGround.current = true;
       mark("playerGrounded");

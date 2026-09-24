@@ -11,7 +11,7 @@ const PROPS = [
   { url: "/assets/3d/impact-city/props/water-filter/water-filter-station.glb", color: "#6f8aa0", height: 0.8 },
 ] as const;
 
-function ClayProp({ url, color, height, position, zone }: { url: string; color: string; height: number; position: THREE.Vector3; zone: string }) {
+export function ClayProp({ url, color, height, position, zone, highlight }: { url: string; color: string; height: number; position: THREE.Vector3; zone: string; highlight?: () => number }) {
   const { scene } = useGLTF(url);
   const { object, mats } = useMemo(() => {
     const obj = scene.clone(true);
@@ -38,7 +38,12 @@ function ClayProp({ url, color, height, position, zone }: { url: string; color: 
   }, [scene, color, height]);
   useFrame(() => {
     const d = useDecayStore.getState().decay[zone] ?? 0;
-    for (const m of mats) m.userData.uDecay.value += (d - m.userData.uDecay.value) * 0.1;
+    const h = highlight ? highlight() : 0;
+    for (const m of mats) {
+      m.userData.uDecay.value += (d - m.userData.uDecay.value) * 0.1;
+      // Signal Ping outline stand-in: amber emissive pulse (amber/emerald also differ in luminance for colour-blind safety).
+      m.emissive.setRGB(0.9 * h, 0.55 * h, 0.1 * h);
+    }
   });
   useEffect(() => () => mats.forEach((m) => m.dispose()), [mats]);
   return (
