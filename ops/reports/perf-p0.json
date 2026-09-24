@@ -1,0 +1,52 @@
+{
+  "phase": "P0",
+  "gate": "med tier fps.p95 >= 45 on the reference laptop (08-build-plan P0 Accept)",
+  "generatedAt": "2026-09-24T03:00:18.134Z",
+  "machine": "sandbox-cpu-only",
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "cpus": "Intel(R) Xeon(R) Processor @ 2.60GHz",
+    "cores": 2,
+    "memGB": 2
+  },
+  "headless": true,
+  "softwareRenderer": true,
+  "validForGate": false,
+  "verdict": "INVALID (software renderer; rerun on reference laptop)",
+  "runs": [
+    {
+      "tier": "med",
+      "samples": 7,
+      "durationMs": 15582,
+      "frameMs": {
+        "p50": 2600.5,
+        "p95": 3760.3,
+        "p99": 3760.3,
+        "max": 3760.3,
+        "mean": 2763.11
+      },
+      "fps": {
+        "p50": 0.38,
+        "p95": 0.27,
+        "mean": 0.36
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.0.0 Safari/537.36",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1
+      },
+      "loadMs": {
+        "splatLoaded": 2743,
+        "colliderParsed": 2338,
+        "canvasReady": 2344
+      },
+      "wallMs": 55590,
+      "errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ]
+    }
+  ]
+}
