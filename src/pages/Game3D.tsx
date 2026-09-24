@@ -4,6 +4,7 @@ import { Canvas3D } from "@/game3d/engine/Canvas3D";
 import { tierFromQuery } from "@/game3d/engine/quality";
 import { useDecayStore } from "@/game3d/world/decay/decayStore";
 import { EncounterOverlay } from "@/game3d/encounters/EncounterOverlay";
+import { EvidenceLedger } from "@/game3d/ui/EvidenceLedger";
 import { useCh1 } from "@/game3d/encounters/ch1Store";
 import { playerState } from "@/game3d/player/playerState";
 import { BARKS } from "@/game3d/cosmos/barks";
@@ -71,12 +72,13 @@ export default function Game3D() {
     <>
       <Canvas3D tier={tier} autopilot={autopilot} perf={perf} showCollider={showCollider} />
       <EncounterOverlay />
+      <EvidenceLedger />
       <div
         style={{ position: "fixed", top: 8, left: 8, color: "#cfe8d8", font: "12px ui-monospace, monospace", background: "rgba(0,0,0,.45)", padding: "6px 8px", borderRadius: 4, pointerEvents: "none" }}
       >
         P0 spike · {tier} · {fps} fps · decay {decay.toFixed(1)}
         <br />
-        WASD move · Shift sprint · Space jump · drag to look · F Signal Ping · E interact · G decay test
+        WASD move · Shift sprint · Space jump · drag to look · F Signal Ping · E interact · Tab evidence · G decay test
       </div>
       <Link to="/game" style={{ position: "fixed", top: 8, right: 8, color: "#cfe8d8", font: "12px ui-monospace, monospace" }}>
         2D version
