@@ -213,3 +213,66 @@ export interface GameSaveState {
 // Mission progression order (see progressionEngine spec).
 // ---------------------------------------------------------------------------
 export const MISSION_ORDER = ["m1_compliance_gate", "m2_poisoned_prompt", "m3_consent_tablet"] as const;
+
+// ---------------------------------------------------------------------------
+// 3D Episode 1 additions (docs/specs/3d-game/05-technical-architecture.md §4).
+// Extended, not replaced. ObjectiveKind has no combat variant: keep it that way.
+// ---------------------------------------------------------------------------
+export type EvidenceTier = "observed" | "reported" | "forecast" | "interpretation";
+
+export interface EvidenceCard {
+  id: string;
+  claim: string;
+  /** In-world source, never a real company or person. */
+  source: string;
+  tier: EvidenceTier;
+  confidence: "high" | "med" | "low";
+  codexId?: string;
+}
+
+/** Koontz 5-ratchet beat set (02-narrative §3). */
+export interface ChapterBeat {
+  hope: string;
+  threat: string;
+  partialWin: string;
+  worse: string;
+  openLoop: string;
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  missionId?: string;
+  beats: ChapterBeat;
+  encounters: string[];
+  echoVisionId?: string;
+  clockCost: number;
+}
+
+export interface BranchFlagSet {
+  [flag: string]: string | number | boolean;
+}
+
+export interface GameSettingsV2 {
+  stopMotion: boolean;
+  quality: "low" | "med" | "high";
+  /** 1 = normal timing, up to 3 = three times slower. */
+  assistTiming: number;
+}
+
+export interface GameSaveStateV2 extends Omit<GameSaveState, "version"> {
+  version: 2;
+  chapterId: string;
+  encounterIndex: number;
+  completedChapterIds: string[];
+  flags: BranchFlagSet;
+  evidence: string[];
+  visionPaths: Record<string, number[]>;
+  /** Grader-cycle clock, 3 -> 0. */
+  graderClock: number;
+  /** Record decay per zone, 0..1. */
+  decay: Record<string, number>;
+  settings: GameSettingsV2;
+}
+
+export const CHAPTER_ORDER = ["ch1_compliance_gate", "ch2_poisoned_prompt", "ch3_the_board", "ch4_perma_death", "ch5_consent"] as const;
